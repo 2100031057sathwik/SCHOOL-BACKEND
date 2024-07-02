@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const UserDetails = require('../models/user'); // Adjust the path to your user model
 const router = express.Router();
 
+const SALT_ROUNDS = 10;
+
 // Check if email exists
 router.get('/check-email', async (req, res) => {
   const { email } = req.query;
@@ -18,7 +20,7 @@ router.get('/check-email', async (req, res) => {
 router.post('/register', async (req, res) => {
   const { email, name, password } = req.body;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const newUser = new UserDetails({ email, name, password: hashedPassword });
     await newUser.save();
     res.status(201).json({ message: 'User registered successfully' });
@@ -39,7 +41,7 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-    res.status(200).json({ message: 'Login successful' });
+    res.status(200).json({ message: 'Login successful', userId: user._id, userName: user.name });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
