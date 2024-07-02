@@ -14,11 +14,12 @@ const studentSchema = new mongoose.Schema({
   'PH.NO': {
     type: String,
     validate: {
-      validator: function (v) {
+      validator: function(v) {
+        // Basic phone number validation (customize as needed)
         return /\d{10}/.test(v); // Validates 10-digit phone numbers
       },
-      message: (props) => `${props.value} is not a valid phone number!`,
-    },
+      message: props => `${props.value} is not a valid phone number!`
+    }
   },
   // Add more fields as necessary
 });
